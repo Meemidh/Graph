@@ -1,47 +1,37 @@
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
-import pandas as pd
-import plotly.express as px
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
 import pandas as pd
+# import dash_daq as daq
 from dash.dependencies import Input, Output
 import plotly.express as px
 from datetime import datetime as dt
 
 pd.options.mode.chained_assignment = None  
 
-cred = credentials.Certificate('plenpung-firebase-adminsdk-3kbnb-3d11f00d77.json')
-firebase_admin.initialize_app(cred)
-db = firestore.client()
-docs = firestore.client().collection('UserSentimentRecord').stream()
-box = pd.DataFrame(columns=['datetime','result','text'])
-
-for doc in docs: 
-    userid = doc
-    data = doc.to_dict()  
-    box = box.append({'datetime':data['datetime'],'result': data[u'result'],'test': data[u'text']}, ignore_index=True)
 
 
-box['datetime'] = pd.to_datetime(box['datetime']).dt.floor('H')
+data = pd.read_csv('result_sentiment.csv',encoding='utf-8-sig') 
 
-date_time_range = pd.date_range(start="2021-08-17", end="2021-10-25" , freq="60min" )
+data['datetime'] = pd.to_datetime(data['datetime']).dt.floor('H')
+
+date_time_range = pd.date_range(start="2021-08-17", end="2021-08-19" , freq="60min" )
 
 df = pd.DataFrame(data=date_time_range,columns=['datetime'])
 df['negative'] = 0
 df['neutral'] = 0
 df['positive'] = 0
 
-
 for i in range(len(df)):
-    df['negative'][i] = len(box[(box['result']==-1) & (box['datetime'] == df['datetime'][i])])
-    df['neutral'][i]  = len(box[(box['result']==0) & (box['datetime']  == df['datetime'][i])])
-    df['positive'][i] = len(box[(box['result']==1) & (box['datetime']  == df['datetime'][i])])
+    df['negative'][i] = len(data[(data['result']==-1) & (data['datetime'] == df['datetime'][i])])
+    df['neutral'][i]  = len(data[(data['result']==0) & (data['datetime']  == df['datetime'][i])])
+    df['positive'][i] = len(data[(data['result']==1) & (data['datetime']  == df['datetime'][i])])
+
+
 
 # col_options = [dict(label=x, value=x) for x in df.columns]
 # dimensions = ["x", "y", "sentiment", "facet_col", "facet_row"]
+
 
 app = dash.Dash(__name__)
 
@@ -69,20 +59,20 @@ app.layout = html.Div([
               )
 
 def make_figure(start_date,end_date):
-        
-    date_time_range = pd.date_range(start= start_date , end= end_date , freq="60min" )
-
+    
+    date_time_range = pd.date_range(start= start_date , end= end_date , freq="60min")
+     
     df = pd.DataFrame(data=date_time_range,columns=['datetime'])
     df['negative'] = 0
     df['neutral'] = 0
     df['positive'] = 0
 
-
     for i in range(len(df)):
-        df['negative'][i] = len(box[(box['result']==-1) & (box['datetime'] == df['datetime'][i])])
-        df['neutral'][i]  = len(box[(box['result']==0) & (box['datetime']  == df['datetime'][i])])
-        df['positive'][i] = len(box[(box['result']==1) & (box['datetime']  == df['datetime'][i])])
-
+        df['negative'][i] = len(data[(data['result']==-1) & (data['datetime'] == df['datetime'][i])])
+        df['neutral'][i]  = len(data[(data['result']==0) & (data['datetime']  == df['datetime'][i])])
+        df['positive'][i] = len(data[(data['result']==1) & (data['datetime']  == df['datetime'][i])])
+    
+    
     return px.line( 
         df,
         x='datetime',
@@ -90,7 +80,8 @@ def make_figure(start_date,end_date):
         labels={
                      "datetime": "Day ,time(hr) ",
                      "value": "Count",
-                     "variable" : "Sentiment"                                     
+                     "variable" : "Sentiment"
+                                      
                  },
         
         color_discrete_map={
@@ -101,5 +92,5 @@ def make_figure(start_date,end_date):
             
         height=700,
     )
-    
+
 app.run_server(debug=True)
