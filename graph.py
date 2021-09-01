@@ -36,6 +36,8 @@ for i in range(len(df)):
 
 app = dash.Dash(__name__)
 
+server = app.server
+
 app.layout = html.Div([
     html.H1("Demo: Plotly Express in Dash with Tips Dataset"),
     
