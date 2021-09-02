@@ -47,7 +47,7 @@ app = dash.Dash(__name__)
 server = app.server
 
 app.layout = html.Div([
-    html.H1("Graph Sentiment"),
+    html.H1("Sentiment analysis graph"),
     
     dcc.DatePickerRange(
         id='my-date-picker-range',
