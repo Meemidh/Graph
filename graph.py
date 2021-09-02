@@ -47,7 +47,7 @@ app = dash.Dash(__name__)
 server = app.server
 
 app.layout = html.Div([
-    html.H1("Demo: Plotly Express in Dash with Tips Dataset"),
+    html.H1("Demo: Plotly Express in Dash with Sentiment Dataset"),
     
     dcc.DatePickerRange(
         id='my-date-picker-range',
