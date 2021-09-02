@@ -38,6 +38,7 @@ app = dash.Dash(__name__)
 
 server = app.server
 
+
 app.layout = html.Div([
     html.H1("Demo: Plotly Express in Dash with Tips Dataset"),
     
@@ -96,4 +97,5 @@ def make_figure(start_date,end_date):
         height=700,
     )
 
-app.run_server(debug=True)
+if __name__ == '__main__':
+    app.run_server(debug=True)
