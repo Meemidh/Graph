@@ -17,8 +17,9 @@ cred = credentials.Certificate('plenpung-firebase-adminsdk-3kbnb-3d11f00d77.json
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 docs = firestore.client().collection('UserSentimentRecord').stream()
-box = pd.DataFrame(columns=['datetime','result','text'])
 
+
+box = pd.DataFrame(columns=['datetime','result','text'])
 for doc in docs: 
     userid = doc
     data = doc.to_dict()  
