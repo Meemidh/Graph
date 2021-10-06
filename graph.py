@@ -56,7 +56,7 @@ app.layout = html.Div([
         min_date_allowed = dt(2021, 8, 1),
         max_date_allowed = dt(2022, 12, 31),
         start_date = dt(2021, 8, 1),
-        end_date = dt(2021, 10, 1),
+        end_date = dt(2021, 10, 10),
         start_date_placeholder_text ='DD/MM/YYYY'
     ),
     html.H2("  "),
